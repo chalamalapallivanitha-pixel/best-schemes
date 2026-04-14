@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: schemes
+    // Fields: name, category, benefits, eligibility, officialLink, verified, minAge, maxAge, state
+    //
+    // Collection: loans
+    // Fields: name, purpose, benefits, maxAmount, interestRate, tenure, officialLink
+    //
+    // Collection: users
+    // Fields: uid, name, age, income, occupation, gender, education, state
+    //
+    // Collection: fraud_alerts
+    // Fields: title, message, severity, timestamp
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (
+          (request.auth.token.email == "chalamalapallivanitha@gmail.com") ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+        );
+    }
+
+    function isValidScheme(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 200 &&
+             data.category is string &&
+             data.officialLink is string && data.officialLink.matches("^https?://.*") &&
+             data.verified is bool;
+    }
+
+    function isValidUser(data) {
+      return data.uid == request.auth.uid &&
+             data.name is string && data.name.size() < 100 &&
+             data.age is int && data.age >= 0 && data.age < 150 &&
+             data.income is number &&
+             data.occupation is string &&
+             data.state is string;
+    }
+
+    // Rules
+    match /schemes/{schemeId} {
+      allow read: if true;
+      allow write: if request.auth.token.email == "chalamalapallivanitha@gmail.com";
+    }
+
+    match /loans/{loanId} {
+      allow read: if true;
+      allow write: if request.auth.token.email == "chalamalapallivanitha@gmail.com";
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId) || request.auth.token.email == "chalamalapallivanitha@gmail.com";
+    }
+
+    match /fraud_alerts/{alertId} {
+      allow read: if true;
+      allow write: if request.auth.token.email == "chalamalapallivanitha@gmail.com";
+    }
+  }
+}

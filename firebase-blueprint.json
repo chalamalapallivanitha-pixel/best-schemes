@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "Scheme": {
+      "title": "Government Welfare Scheme",
+      "description": "Represents a verified government welfare scheme.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the scheme" },
+        "category": { "type": "string", "description": "Category (Education, Healthcare, etc.)" },
+        "benefits": { "type": "string", "description": "Summary of benefits" },
+        "eligibility": { "type": "string", "description": "Overview of eligibility criteria" },
+        "officialLink": { "type": "string", "description": "Verified application link" },
+        "verified": { "type": "boolean", "description": "Whether the scheme is verified" },
+        "minAge": { "type": "integer", "description": "Minimum age for eligibility" },
+        "maxAge": { "type": "integer", "description": "Maximum age for eligibility" },
+        "state": { "type": "string", "description": "State (or 'National')" }
+      },
+      "required": ["name", "category", "benefits", "eligibility", "officialLink", "verified"]
+    },
+    "Loan": {
+      "title": "Government Loan Program",
+      "description": "Represents a government-backed loan program.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the loan" },
+        "purpose": { "type": "string", "description": "Purpose of the loan" },
+        "benefits": { "type": "string", "description": "Key benefits" },
+        "maxAmount": { "type": "number", "description": "Maximum loan amount" },
+        "interestRate": { "type": "number", "description": "Annual interest rate (%)" },
+        "tenure": { "type": "integer", "description": "Repayment tenure in months" },
+        "officialLink": { "type": "string", "description": "Official portal link" }
+      },
+      "required": ["name", "purpose", "benefits", "maxAmount", "interestRate", "tenure", "officialLink"]
+    },
+    "User": {
+      "title": "User Profile",
+      "description": "User profile for eligibility checking.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "integer" },
+        "income": { "type": "number" },
+        "occupation": { "type": "string" },
+        "gender": { "type": "string" },
+        "education": { "type": "string" },
+        "state": { "type": "string" }
+      },
+      "required": ["uid", "name", "age", "income", "occupation", "gender", "education", "state"]
+    },
+    "FraudAlert": {
+      "title": "Fraud Alert",
+      "description": "Security alerts for users.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "message", "severity", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/schemes/{schemeId}": {
+      "schema": "Scheme",
+      "description": "Collection of government schemes."
+    },
+    "/loans/{loanId}": {
+      "schema": "Loan",
+      "description": "Collection of government loan programs."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and preferences."
+    },
+    "/fraud_alerts/{alertId}": {
+      "schema": "FraudAlert",
+      "description": "Real-time fraud alerts."
+    }
+  }
+}

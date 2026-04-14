@@ -1,0 +1,5 @@
+{
+  "name": "JanKalyan - AI Welfare Portal",
+  "description": "An intelligent platform for Indian citizens to discover, verify, and apply for government welfare schemes and loans with AI-powered fraud detection and voice assistance.",
+  "requestFramePermissions": ["microphone"]
+}
